@@ -1,16 +1,10 @@
-import Header from "@/components/Header";
-import Navigation from "@/components/Navigation";
+
+import {ActivityCard} from "@/components/ActivityCard";
 
 const HomePage = () => {
     return (
-        <div className="bg-white min-h-screen flex flex-col justify-between">
-            {/* enter components */}
-            <Header/>
-            <div className="flex content-center flex-grow min-w-max justify-center items-center">
-                <div className="h-10">CARDS</div>
-            </div>
-            <Navigation/>
-
+        <div className="flex content-center flex-grow min-w-max justify-center items-center">
+            <ActivityCard/>
         </div>
     )
 }
