@@ -4,6 +4,7 @@ import { Label } from "@radix-ui/react-label";
 import { Button } from "./ui/button";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "./ui/card";
 import { Input } from "./ui/input";
+import { Textarea } from "./ui/textarea";
 
 export function ProfilePage() {
     return (
@@ -22,7 +23,8 @@ export function ProfilePage() {
                         <Input type="text" id="location" name="location" />
                         <Label htmlFor="password">Password</Label>
                         <Input type="password" id="password" name="password" />
-                        <Label htmlFor="challengeScore">Challenge score</Label>
+                        <Label htmlFor="challengeScore">Challenge score:</Label>
+                        <h3>3 Milliarden Punkte</h3>
                     </div>
                 </form>
             </CardContent>
