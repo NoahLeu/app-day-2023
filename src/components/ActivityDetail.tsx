@@ -11,9 +11,10 @@ const tags = Array.from({ length: 50 }).map(
   (_, i, a) => `v1.2.0-beta.${a.length - i}`
 )
 
+// TOD=: lower right corner not rounded
 export function ActivityDetail() {
   return (
-    <ScrollArea className="h-85 w-50 rounded-md">
+    <ScrollArea className="h-80 w-50 rounded-md">
       <Card className="w-[350px] ">
             <div className="flex flex-col items-center justify-center">
                 <CardHeader >
