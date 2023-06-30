@@ -32,9 +32,9 @@ const Navigation = () => {
               </Link>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <Link href="#" legacyBehavior passHref>
+              <Link href="profile-page" legacyBehavior passHref>
                 <NavigationMenuLink
-                  href="#"
+                  href="profile-page"
                   className={navigationMenuTriggerStyle()}
                 >
                   profile
