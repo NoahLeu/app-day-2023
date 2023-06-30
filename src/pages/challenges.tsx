@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
@@ -56,3 +57,18 @@ export default function Challenges() {
     </>
   );
 }
+=======
+// our-domain.com/challenges
+
+import {ActivityCard} from "@/components/ActivityCard";
+
+const Challenges = () => {
+    return (
+        <div className="flex content-center flex-grow min-w-max justify-center items-center">
+            <ActivityCard/>
+        </div>
+    )
+}
+
+export default Challenges;
+>>>>>>> pages-structure
