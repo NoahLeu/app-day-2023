@@ -8,7 +8,7 @@ type LayoutProps = {
 
 const Layout = ({children}: LayoutProps) => {
     return (
-        <div className="min-h-screen flex flex-col justify-between">
+        <div className="min-h-screen flex flex-col justify-between max-h-screen">
             <Header/>
                 {children}
             <Navigation/>

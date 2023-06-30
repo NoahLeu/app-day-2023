@@ -1,7 +1,8 @@
+// our-domain.com/challenges
 
 import {ActivityCard} from "@/components/ActivityCard";
 
-const HomePage = () => {
+const Challenges = () => {
     return (
         <div className="flex content-center flex-grow min-w-max justify-center items-center">
             <ActivityCard/>
@@ -9,4 +10,4 @@ const HomePage = () => {
     )
 }
 
-export default HomePage;
+export default Challenges;

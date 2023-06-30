@@ -32,7 +32,7 @@ import {
 
     return (
         
-      <Table className="w-[350px] text-white">
+      <Table className="w-[350px]">
         <TableCaption>A list of your recent invoices.</TableCaption>
         <TableHeader>
           <TableRow>

@@ -1,5 +1,5 @@
 import Head from "next/head";
-import HomePage from "@/pages/homePage/HomePage";
+import Challenges from "@/pages/challenges";
 
 export default function Home() {
   return (
@@ -11,7 +11,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex-grow flex items-center">
-          <HomePage />
+          <Challenges />
       </main>
     </>
   );
