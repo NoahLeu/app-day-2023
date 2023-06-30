@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+    provider        = "prisma-client-js"
     previewFeatures = ["jsonProtocol"]
 }
 
@@ -50,9 +50,10 @@ model Session {
 
 model User {
     id            String    @id @default(cuid())
-    name          String?
+    username      String?   @unique
     email         String?   @unique
     emailVerified DateTime?
+    password      String? // @db.Text
     image         String?
     accounts      Account[]
     sessions      Session[]

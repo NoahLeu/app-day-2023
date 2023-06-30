@@ -8,6 +8,9 @@ import {
 import DiscordProvider from "next-auth/providers/discord";
 import { env } from "@/env.mjs";
 import { prisma } from "@/server/db";
+import Credentials from "next-auth/providers/credentials";
+import { loginSchema } from "./validation/auth";
+import { verify } from "argon2";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -17,6 +20,7 @@ import { prisma } from "@/server/db";
  */
 declare module "next-auth" {
   interface Session extends DefaultSession {
+    id: string;
     user: {
       id: string;
       // ...other properties
@@ -37,19 +41,60 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
+    // session: ({ session, user }) => ({
+    //   ...session,
+    //   user: {
+    //     ...session.user,
+    //     id: user.id,
+    //   },
+    // }),
+    jwt: ({ token, user }) => {
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+      }
+
+      return token;
+    },
+    session: ({ session, token }) => {
+      if (token) {
+        session.id = token.id as string;
+      }
+
+      return session;
+    },
   },
   adapter: PrismaAdapter(prisma),
   providers: [
-    DiscordProvider({
-      clientId: env.DISCORD_CLIENT_ID,
-      clientSecret: env.DISCORD_CLIENT_SECRET,
+    Credentials({
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "text", placeholder: "jsmith" },
+        password: { label: "Password", type: "password" },
+      },
+      authorize: async (credentials, req) => {
+        const creds = await loginSchema.parseAsync(credentials);
+
+        const user = await prisma.user.findFirst({
+          where: { email: creds.email },
+        });
+
+        if (!user) {
+          return null;
+        }
+
+        const isValidPassword = await verify(user.password!, creds.password);
+
+        if (!isValidPassword) {
+          return null;
+        }
+
+        return {
+          id: user.id,
+          email: user.email,
+          username: user.username,
+        };
+      },
     }),
     /**
      * ...add more providers here.
@@ -61,6 +106,14 @@ export const authOptions: NextAuthOptions = {
      * @see https://next-auth.js.org/providers/github
      */
   ],
+  jwt: {
+    secret: "super-secret",
+    maxAge: 15 * 24 * 30 * 60, // 15 days
+  },
+  pages: {
+    signIn: "/sign-in",
+    newUser: "/sign-up",
+  },
 };
 
 /**
