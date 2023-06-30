@@ -49,14 +49,17 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
-    username      String?   @unique
-    email         String?   @unique
-    emailVerified DateTime?
-    password      String? // @db.Text
-    image         String?
-    accounts      Account[]
-    sessions      Session[]
+    id                String     @id @default(cuid())
+    username          String?    @unique
+    email             String?    @unique
+    emailVerified     DateTime?
+    password          String? // @db.Text
+    image             String?
+    challenge_score   Int        @default(0)
+    active_challenge  Challenge? @relation(fields: [activeChallengeId], references: [id])
+    activeChallengeId String?
+    accounts          Account[]
+    sessions          Session[]
 }
 
 model VerificationToken {
@@ -65,4 +68,27 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+// challenges
+model Challenge {
+    id           String   @id @default(cuid())
+    title        String
+    image        String?
+    description  String?
+    category     String
+    difficulty   Int
+    defaultScore Int
+    location     Location @relation(fields: [locationId], references: [id])
+    locationId   String
+    User         User[]
+}
+
+model Location {
+    id         String      @id @default(cuid())
+    latitude   Float
+    longitude  Float
+    name       String
+    address    String
+    challenges Challenge[]
 }
