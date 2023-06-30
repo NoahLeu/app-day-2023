@@ -20,7 +20,6 @@ import { verify } from "argon2";
  */
 declare module "next-auth" {
   interface Session extends DefaultSession {
-    id: string;
     user: {
       id: string;
       // ...other properties
@@ -41,28 +40,13 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    // session: ({ session, user }) => ({
-    //   ...session,
-    //   user: {
-    //     ...session.user,
-    //     id: user.id,
-    //   },
-    // }),
-    jwt: ({ token, user }) => {
-      if (user) {
-        token.id = user.id;
-        token.email = user.email;
-      }
-
-      return token;
-    },
-    session: ({ session, token }) => {
-      if (token) {
-        session.id = token.id as string;
-      }
-
-      return session;
-    },
+    session: ({ session, user }) => ({
+      ...session,
+      user: {
+        ...session.user,
+        id: user.id,
+      },
+    }),
   },
   adapter: PrismaAdapter(prisma),
   providers: [
@@ -106,14 +90,6 @@ export const authOptions: NextAuthOptions = {
      * @see https://next-auth.js.org/providers/github
      */
   ],
-  jwt: {
-    secret: "super-secret",
-    maxAge: 15 * 24 * 30 * 60, // 15 days
-  },
-  pages: {
-    signIn: "/sign-in",
-    newUser: "/sign-up",
-  },
 };
 
 /**

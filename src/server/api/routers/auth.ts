@@ -11,7 +11,7 @@ export const authRouter = createTRPCRouter({
         password: z.string(),
       })
     )
-    .query(async ({ input, ctx }) => {
+    .mutation(async ({ input, ctx }) => {
       const { email, username, password } = input;
 
       const existsEmailOrUsername = await ctx.prisma.user.findFirst({
@@ -41,6 +41,8 @@ export const authRouter = createTRPCRouter({
       });
 
       return {
+        status: 201,
+        message: "User created",
         user,
       };
     }),
