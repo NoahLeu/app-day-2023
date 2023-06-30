@@ -18,7 +18,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { Icon } from "@radix-ui/react-select"
 import { FaWheelchair } from "react-icons/fa"
 
 
