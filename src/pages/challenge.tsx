@@ -56,7 +56,7 @@ type Location = {
 //     </>
 //   );
 // }
-// our-domain.com/challenges
+// our-domain.com/challenge
 
 import { ActivityCard } from "@/components/ActivityCard";
 
@@ -77,6 +77,7 @@ const Challenge = ({ challenge }: Props) => {
       >
         Get New Challenge
       </button> */}
+      <button onClick={() => void signIn()}>Sign in</button>
     </div>
   );
 };

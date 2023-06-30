@@ -20,6 +20,7 @@ import { verify } from "argon2";
  */
 declare module "next-auth" {
   interface Session extends DefaultSession {
+    id: string;
     user: {
       id: string;
       // ...other properties
@@ -40,13 +41,25 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
+    jwt: ({ token, user }) => {
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+      }
+
+      return token;
+    },
+    session: ({ session, token }) => {
+      if (token) {
+        session.id = token.id as string;
+      }
+
+      return session;
+    },
+  },
+  secret: "secret",
+  session: {
+    strategy: "jwt",
   },
   adapter: PrismaAdapter(prisma),
   providers: [
@@ -63,11 +76,14 @@ export const authOptions: NextAuthOptions = {
           where: { email: creds.email },
         });
 
+        console.log(user);
+
         if (!user) {
           return null;
         }
 
         const isValidPassword = await verify(user.password!, creds.password);
+        console.log("valid? :", isValidPassword);
 
         if (!isValidPassword) {
           return null;

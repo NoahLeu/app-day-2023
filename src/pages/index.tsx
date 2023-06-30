@@ -42,18 +42,15 @@ type Props = {
 };
 export default function Home({ challenge }: Props) {
   // use session nextauth
-  // const session = useSession();
+  const session = useSession();
 
-  // console.log(session);
+  if (session.status === "loading") {
+    return <div>Loading...</div>;
+  }
 
-  // if (session.status === "loading") {
-  //   return <div>Loading...</div>;
-  // }
-
-  // if (session.status !== "authenticated") {
-  //   // force sign in
-  //   return <button onClick={() => void signIn()}>Sign in</button>;
-  // }
+  if (session.status !== "authenticated") {
+    return <button onClick={() => void signIn()}>Sign in</button>;
+  }
 
   return (
     <>
