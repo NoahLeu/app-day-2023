@@ -1,29 +1,70 @@
 import Head from "next/head";
-<<<<<<< HEAD
-import Link from "next/link";
+import Challenge from "@/pages/challenge";
 import { api } from "@/utils/api";
-import { useForm } from "react-hook-form";
-import { ISignUp } from "@/server/validation/auth";
-=======
-import Challenges from "@/pages/challenges";
->>>>>>> pages-structure
+import { signIn, useSession } from "next-auth/react";
 
-export default function Home() {
+// getServersideProps
+export function getServerSideProps() {
+  // get current user challenge
+  // const userRes = api.auth.me.useQuery({});
+
+  // if (!userRes.isSuccess || !userRes.data.user.activeChallengeId) {
+  //   return {
+  //     challenge: null,
+  //   };
+  // }
+
+  // const challengeRes = api.challenge.getChallenge.useQuery({
+  //   id: userRes.data.user.activeChallengeId,
+  // });
+
+  // if (!challengeRes.isSuccess) {
+  //   return {
+  //     challenge: null,
+  //   };
+  // }
+
+  // return {
+  //   props: {
+  //     challenge: challengeRes.data.challenge,
+  //   },
+  // };
+
+  return {
+    props: {
+      challenge: null,
+    },
+  };
+}
+
+type Props = {
+  challenge: Challenge;
+};
+export default function Home({ challenge }: Props) {
+  // use session nextauth
+  // const session = useSession();
+
+  // console.log(session);
+
+  // if (session.status === "loading") {
+  //   return <div>Loading...</div>;
+  // }
+
+  // if (session.status !== "authenticated") {
+  //   // force sign in
+  //   return <button onClick={() => void signIn()}>Sign in</button>;
+  // }
+
   return (
     <>
       <Head>
         <title>MVP1</title>
-          {/* TODO: fill out meta*/}
+        {/* TODO: fill out meta*/}
         <meta name="description" content="" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-<<<<<<< HEAD
-      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
-        <button onClick={() => void signIn()}>sign in</button>
-=======
-      <main className="flex-grow flex items-center">
-          <Challenges />
->>>>>>> pages-structure
+      <main className="flex flex-grow items-center">
+        <Challenge challenge={challenge} />
       </main>
     </>
   );
