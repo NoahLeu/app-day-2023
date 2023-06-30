@@ -26,3 +26,36 @@ You can check out the [create-t3-app GitHub repository](https://github.com/t3-os
 ## How do I deploy this?
 
 Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+
+# Table of Contents
+
+## recommendations (for challenges)
+- risk levels
+- location area
+
+## challenges:
+- casual/competitive
+- qr code
+- time limitation
+- filter: risk level, monetization, distance, popularity, categories
+
+## scoreboard:
+- global/regional
+
+## profile:
+
+## business model:
+- affiliates: climbing, Carl´s,
+
+## releases
+
+### mvp1:
+- user
+- database with x recommendations(categories location, etc...)
+- ai recommendations
+- scoreboard
+- choose and pick challenge; options: get new, done
+- 
+
+
+
