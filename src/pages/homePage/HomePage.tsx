@@ -1,7 +1,11 @@
+import { ActivityCard } from "@/components/ActivityCard";
+import { ScoreBoard } from "@/components/ScoreBoard";
+
 const HomePage = () => {
     return (
         <div className="bg-black min-h-screen">
-            {/* enter components */}
+            <ActivityCard />
+            <ScoreBoard />
         </div>
     )
 }
