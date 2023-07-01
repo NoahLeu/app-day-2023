@@ -37,6 +37,18 @@ export const challengeRouter = createTRPCRouter({
           ? user.activeChallengeScore
           : challenge.defaultScore;
 
+      const location = await ctx.prisma.location.findUnique({
+        where: {
+          id: challenge.locationId,
+        },
+      });
+
+      if (!location) {
+        throw new Error("Location not found");
+      }
+
+      challenge.location = location;
+
       return {
         status: 200,
         message: "Challenge found",
@@ -224,11 +236,15 @@ export const challengeRouter = createTRPCRouter({
   getPlayerScores: publicProcedure
     .input(z.object({}))
     .query(async ({ input, ctx }) => {
-      const users = await ctx.prisma.user.findMany({
+      let users = await ctx.prisma.user.findMany({
         select: {
           username: true,
           challenge_score: true,
         },
+      });
+
+      users = users.sort((a, b) => {
+        return b.challenge_score - a.challenge_score;
       });
 
       return {

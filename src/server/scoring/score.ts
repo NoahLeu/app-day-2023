@@ -15,9 +15,9 @@ export const getChallengeScore = (
   score = distanceScore(score, userLocation, challenge.location);
   score = riskLevelScore(score, challenge.difficulty);
 
-  // ! twist implementation
+  // ! TWIST implementation
   const randomNum = Math.floor(Math.random() * 100) + 1;
-  if (randomNum <= 50) {
+  if (randomNum <= 10) {
     score = score / 10;
   }
 

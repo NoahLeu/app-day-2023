@@ -10,18 +10,26 @@ import { useEffect, useState } from "react";
 
 // get url parameter id
 export function getServerSideProps(context: GetServerSidePropsContext) {
-  const { id } = context.query;
+  const { id, mode } = context.query;
+
+  if (typeof mode === "undefined") {
+    return {
+      props: { id, mode: "" },
+    };
+  }
   return {
-    props: { id },
+    props: { id, mode },
   };
 }
 
 type Props = {
   id: string;
+  mode: string;
 };
 
-export default function Challenge({ id }: Props) {
+export default function Challenge({ id, mode }: Props) {
   const session = useSession();
+  const isExplorerMode = mode === "explorer";
   const [challenge, setChallenge] = useState<Challenge | null>(null);
   const challengeReq = api.challenge.getChallenge.useQuery(
     {
@@ -62,7 +70,15 @@ export default function Challenge({ id }: Props) {
             <LoadingLayout />
           ) : (
             challengeReq.isSuccess && (
-              <ActivityDetail activity={challengeReq.data.challenge} />
+              <>
+                <h1 className="w-full pb-4 text-center text-xl">
+                  {isExplorerMode ? "Explorer Mode" : "Challenge Mode"}
+                </h1>
+                <ActivityDetail
+                  activity={challengeReq.data.challenge}
+                  isExplorer={isExplorerMode}
+                />
+              </>
             )
           )}
         </div>

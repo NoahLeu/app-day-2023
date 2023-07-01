@@ -4,11 +4,9 @@ import { FaSyncAlt } from "react-icons/fa";
 
 type Props = {
   riskLevel: number;
-}
+};
 
-const ChallengeRefreshButton = (
-  {riskLevel}: Props
-) => {
+const ChallengeRefreshButton = ({ riskLevel }: Props) => {
   const session = useSession();
   const mutation = api.challenge.getNewChallenge.useMutation();
 
@@ -20,8 +18,7 @@ const ChallengeRefreshButton = (
     mutation
       .mutateAsync({
         userEmail: session.data.user.email,
-        riskLevel: riskLevel
-
+        riskLevel: riskLevel,
       })
       .then(() => {
         window.location.reload();
@@ -32,12 +29,15 @@ const ChallengeRefreshButton = (
   };
 
   return (
-    <button
-      className="mt-4 rounded-full p-4 shadow-sm"
-      onClick={handleNewChallenge}
-    >
-      <FaSyncAlt className="h-7 w-7" />
-    </button>
+    <div className="flex flex-col items-center justify-center">
+      <button
+        className="mt-4 w-fit rounded-full p-4 shadow-md"
+        onClick={handleNewChallenge}
+      >
+        <FaSyncAlt className="h-7 w-7" />
+      </button>
+      <p className="mt-2">Neue Challenge anfordern</p>
+    </div>
   );
 };
 

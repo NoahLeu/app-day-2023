@@ -28,13 +28,15 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { api } from "@/utils/api";
 import { DialogClose } from "@radix-ui/react-dialog";
+import { MapContainer } from "react-leaflet";
 
 type Props = {
   activity: Challenge;
+  isExplorer: boolean;
 };
 
 // TOD=: lower right corner not rounded
-export function ActivityDetail({ activity }: Props) {
+export function ActivityDetail({ activity, isExplorer }: Props) {
   const session = useSession();
   const router = useRouter();
   const [confirmationDialogOpen, setConfirmationDialogOpen] =
@@ -60,6 +62,10 @@ export function ActivityDetail({ activity }: Props) {
         console.error(err);
       });
   };
+
+  console.log(activity.location);
+  const latitude = activity.location.latitude;
+  const longitude = activity.location.longitude;
 
   return (
     <ScrollArea className="w-50 h-fit rounded-md">
@@ -87,10 +93,12 @@ export function ActivityDetail({ activity }: Props) {
                 <FaFire className="mr-2" />
                 <p>{activity.difficulty} / 10</p>
               </div>
-              <div className="flex flex-row items-center justify-center">
-                <p>+{activity.defaultScore}</p>
-                <FaAngleUp className="ml-1 h-6 w-6" />
-              </div>
+              {!isExplorer && (
+                <div className="flex flex-row items-center justify-center">
+                  <p>+{activity.defaultScore}</p>
+                  <FaAngleUp className="ml-1 h-6 w-6" />
+                </div>
+              )}
             </div>
             <CardTitle>{activity.title}</CardTitle>
             <div className="py-0">
@@ -111,26 +119,20 @@ export function ActivityDetail({ activity }: Props) {
         </div>
 
         <CardContent>
-          {/* <div className="space-y-4 divide-y"> */}
-          {/* <CardDescription className="text-l">
-          Beschreibung einer sehr anspruchsvollen Aktivität
-        </CardDescription> */}
           <CardDescription className="text-m">
             {activity.description || "Keine Beschreibung vorhanden."}
           </CardDescription>
-          {/* </div> */}
-          <form>
-            <div className="grid w-full items-center gap-4"></div>
-          </form>
         </CardContent>
         <CardFooter className="flex justify-end">
           <Dialog
             open={confirmationDialogOpen}
             onOpenChange={(open: boolean) => setConfirmationDialogOpen(open)}
           >
-            <Button onClick={() => setConfirmationDialogOpen(true)}>
-              Abschließen
-            </Button>
+            {!isExplorer && (
+              <Button onClick={() => setConfirmationDialogOpen(true)}>
+                Abschließen
+              </Button>
+            )}
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Hast du diese Challenge erfüllt?</DialogTitle>

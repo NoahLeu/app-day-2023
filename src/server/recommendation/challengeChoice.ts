@@ -15,12 +15,16 @@ export const getNewChallenge = (
 ): ChallengeResult | null => {
   if (!challenges || challenges.length === 0) return null;
 
+  // ! TWIST implementation
+  const randomNum = Math.floor(Math.random() * 100) + 1;
+  if (randomNum <= 10) {
+    userRiskLevel = 11 - userRiskLevel;
+  }
+
   const scores = challenges.map((challenge: Challenge) => {
     const score: number = getChallengeScore(challenge, userLocation);
     return { challenge, score };
   });
-
-  console.log("scores to look at:", scores);
 
   const shuffleChallenges: ChallengeResult[] = [];
 

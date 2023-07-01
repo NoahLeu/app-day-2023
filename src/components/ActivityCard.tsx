@@ -30,9 +30,10 @@ import Link from "next/link";
 
 type Props = {
   activity: Challenge;
+  score?: boolean;
 };
 
-export function ActivityCard({ activity }: Props) {
+export function ActivityCard({ activity, score }: Props) {
   const session = useSession();
   const router = useRouter();
   const [confirmationDialogOpen, setConfirmationDialogOpen] =
@@ -60,9 +61,15 @@ export function ActivityCard({ activity }: Props) {
   };
 
   return (
-    <Card className="w-full max-w-md">
+    <Card className={`${score !== false ? "w-full" : "w-80 md:w-96"} max-w-md`}>
       <div className="flex flex-col items-center justify-center">
-        <Link href={"/challenge?id=" + activity.id}>
+        <Link
+          href={
+            "/challenge?id=" +
+            activity.id +
+            (score === false ? "&mode=explorer" : "")
+          }
+        >
           <CardHeader className="w-full">
             <div className="relative h-fit w-full">
               <Image
@@ -85,10 +92,12 @@ export function ActivityCard({ activity }: Props) {
                 <FaFire className="mr-2" />
                 <p>{activity.difficulty} / 10</p>
               </div>
-              <div className="flex flex-row items-center justify-center">
-                <p>+{activity.defaultScore}</p>
-                <FaAngleUp className="ml-1 h-6 w-6" />
-              </div>
+              {score !== false && (
+                <div className="flex flex-row items-center justify-center">
+                  <p>+{activity.defaultScore}</p>
+                  <FaAngleUp className="ml-1 h-6 w-6" />
+                </div>
+              )}
             </div>
 
             <CardTitle>{activity.title}</CardTitle>
@@ -106,9 +115,11 @@ export function ActivityCard({ activity }: Props) {
           open={confirmationDialogOpen}
           onOpenChange={(open) => setConfirmationDialogOpen(open)}
         >
-          <Button onClick={() => setConfirmationDialogOpen(true)}>
-            Abschließen
-          </Button>
+          {score !== false && (
+            <Button onClick={() => setConfirmationDialogOpen(true)}>
+              Abschließen
+            </Button>
+          )}
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Hast du diese Challenge erfüllt?</DialogTitle>

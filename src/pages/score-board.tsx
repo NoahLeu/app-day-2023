@@ -24,7 +24,7 @@ export const ScoreBoardPage = () => {
   }, [scoresRes.isSuccess]);
 
   return (
-    <div className="relative flex flex-col content-center items-center justify-start h-full">
+    <div className="relative flex h-full w-full flex-col content-center items-center justify-start px-2">
       <h1 className="text-xl">Scoreboard</h1>
       <button
         onClick={handleRefreshScoreboard}
