@@ -1,5 +1,10 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "../trpc";
+import { Challenge, Location } from "@prisma/client";
+import {
+  ChallengeResult,
+  getNewChallenge,
+} from "@/server/recommendation/challengeChoice";
 
 export const challengeRouter = createTRPCRouter({
   getChallenge: publicProcedure
@@ -56,17 +61,11 @@ export const challengeRouter = createTRPCRouter({
         throw new Error("User not found");
       }
 
-      const challenge = await ctx.prisma.challenge.findUnique({
-        where: {
-          id: challengeID,
-        },
-      });
-
-      if (!challenge) {
-        throw new Error("Challenge not found");
+      if (!user.activeChallengeScore) {
+        throw new Error("User has no active challenge");
       }
 
-      const challengeScore = challenge.defaultScore;
+      const challengeScore: number = user.activeChallengeScore as number;
 
       // update user score
       const updatedUser = await ctx.prisma.user.update({
@@ -109,10 +108,19 @@ export const challengeRouter = createTRPCRouter({
         throw new Error("No challenges found");
       }
 
-      let randomChallenge =
-        challenges[Math.floor(Math.random() * challenges.length)];
+      let activeChallenge: Challenge | null = null;
 
       if (user.activeChallengeId) {
+        activeChallenge = await ctx.prisma.challenge.findUnique({
+          where: {
+            id: user.activeChallengeId,
+          },
+        });
+
+        if (!activeChallenge) {
+          throw new Error("Active challenge not found");
+        }
+
         // filter out challenges that the user is currently doing
         const filteredChallenges = challenges.filter((challenge) => {
           return user.activeChallengeId !== challenge.id;
@@ -121,14 +129,30 @@ export const challengeRouter = createTRPCRouter({
         if (filteredChallenges.length === 0) {
           throw new Error("No challenges found");
         }
-
-        randomChallenge =
-          filteredChallenges[
-            Math.floor(Math.random() * filteredChallenges.length)
-          ];
       }
 
-      if (!randomChallenge) {
+      const userLocation: Location | null =
+        await ctx.prisma.location.findUnique({
+          where: {
+            id: user.userLocationId!,
+          },
+        });
+
+      if (!userLocation) {
+        throw new Error("User location not found");
+      }
+
+      const chosenChallengePair: ChallengeResult | null = getNewChallenge(
+        challenges,
+        userLocation,
+        activeChallenge
+      );
+
+      if (
+        !chosenChallengePair ||
+        chosenChallengePair.challenge === null ||
+        chosenChallengePair.score === null
+      ) {
         throw new Error("No challenges found");
       }
 
@@ -138,7 +162,8 @@ export const challengeRouter = createTRPCRouter({
           email: userEmail,
         },
         data: {
-          activeChallengeId: randomChallenge.id,
+          activeChallengeId: chosenChallengePair.challenge.id,
+          activeChallengeScore: chosenChallengePair.score,
         },
       });
 

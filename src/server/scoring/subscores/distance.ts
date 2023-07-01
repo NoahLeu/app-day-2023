@@ -26,7 +26,7 @@ const getDistanceMultiplier = (distance: number): number => {
   return 1;
 };
 
-const getDistance = (
+export const getDistance = (
   userLocation: Location,
   eventLocation: Location
 ): number => {
