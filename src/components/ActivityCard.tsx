@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { FaAngleUp, FaWheelchair } from "react-icons/fa";
+import { FaAngleUp, FaFire, FaWheelchair } from "react-icons/fa";
 import { Badge } from "./ui/badge";
 import { type Challenge } from "@/types/challenge";
 import {
@@ -42,8 +42,6 @@ export function ActivityCard({ activity }: Props) {
 
   const handleConfirmCompletion = () => {
     if (!activity.id || !session?.data?.user?.email) {
-      console.log("failed: ", activity.id, session?.data?.user?.email);
-
       return;
     }
 
@@ -84,7 +82,7 @@ export function ActivityCard({ activity }: Props) {
             </div>
             <div className="flex w-full justify-between pt-3 text-lg font-bold">
               <div className="flex flex-row items-center justify-center">
-                <FaWheelchair className="mr-2" />
+                <FaFire className="mr-2" />
                 <p>{activity.difficulty} / 10</p>
               </div>
               <div className="flex flex-row items-center justify-center">

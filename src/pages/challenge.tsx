@@ -6,6 +6,7 @@ import { type Challenge } from "@/types/challenge";
 import ChallengeRefreshButton from "@/components/ChallengeRefreshButton";
 import { type GetServerSidePropsContext } from "next";
 import { ActivityDetail } from "@/components/ActivityDetail";
+import { useEffect, useState } from "react";
 
 // get url parameter id
 export function getServerSideProps(context: GetServerSidePropsContext) {
@@ -21,9 +22,28 @@ type Props = {
 
 export default function Challenge({ id }: Props) {
   const session = useSession();
-  const challengeReq = api.challenge.getChallenge.useQuery({
-    id: id,
-  });
+  const [challenge, setChallenge] = useState<Challenge | null>(null);
+  const challengeReq = api.challenge.getChallenge.useQuery(
+    {
+      email: session?.data?.user?.email || "",
+      id: id,
+    },
+    {
+      enabled: false,
+    }
+  );
+
+  const handleRefetch = async () => {
+    if (!session?.data?.user?.email) {
+      return;
+    }
+
+    await challengeReq.refetch();
+  };
+
+  useEffect(() => {
+    void handleRefetch();
+  }, [session, challengeReq]);
 
   if (session.status === "loading" || session.status === "unauthenticated")
     return <LoadingLayout />;

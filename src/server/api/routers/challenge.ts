@@ -8,9 +8,9 @@ import {
 
 export const challengeRouter = createTRPCRouter({
   getChallenge: publicProcedure
-    .input(z.object({ id: z.string() }))
+    .input(z.object({ id: z.string(), email: z.string().email() }))
     .query(async ({ input, ctx }) => {
-      const { id } = input;
+      const { id, email } = input;
 
       const challenge = await ctx.prisma.challenge.findUnique({
         where: {
@@ -21,6 +21,21 @@ export const challengeRouter = createTRPCRouter({
       if (!challenge) {
         throw new Error("Challenge not found");
       }
+
+      const user = await ctx.prisma.user.findUnique({
+        where: {
+          email: email,
+        },
+      });
+
+      if (!user) {
+        throw new Error("User not found");
+      }
+
+      challenge.defaultScore =
+        user.activeChallengeScore != null
+          ? user.activeChallengeScore
+          : challenge.defaultScore;
 
       return {
         status: 200,
