@@ -1,55 +1,132 @@
-import * as React from "react"
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import { FaWheelchair } from "react-icons/fa"
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { FaAngleUp, FaWheelchair } from "react-icons/fa";
+import { Badge } from "./ui/badge";
+import { type Challenge } from "@/types/challenge";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
+import { DialogClose } from "@radix-ui/react-dialog";
+import { useState } from "react";
+import { api } from "@/utils/api";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
+type Props = {
+  activity: Challenge;
+};
 
-export function ActivityCard() {
-    return (
+export function ActivityCard({ activity }: Props) {
+  const session = useSession();
+  const router = useRouter();
+  const [confirmationDialogOpen, setConfirmationDialogOpen] =
+    useState<boolean>(false);
 
-        <Card className="w-[350px] ">
-            <div className="flex flex-col items-center justify-center">
-                <CardHeader >
-                    <CardTitle >Challenge X</CardTitle>
-                    <Image src="/images/activity_dummy.png" alt="activity_dummy" width={200} height={150} />
-                </CardHeader>
+  const confirmationMutation = api.challenge.completeChallenge.useMutation();
+
+  const handleConfirmCompletion = () => {
+    if (!activity.id || !session?.data?.user?.email) {
+      console.log("failed: ", activity.id, session?.data?.user?.email);
+
+      return;
+    }
+
+    confirmationMutation
+      .mutateAsync({
+        email: session.data.user.email,
+        challengeID: activity.id,
+      })
+      .then(() => {
+        setConfirmationDialogOpen(false);
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
+  return (
+    <Card className="w-full max-w-md">
+      <div className="flex flex-col items-center justify-center">
+        <Link href={"/challenge?id=" + activity.id}>
+          <CardHeader className="w-full">
+            <div className="relative h-fit w-full">
+              <Image
+                src={
+                  activity.image && activity.image != "null"
+                    ? activity.image
+                    : "/images/activity_dummy.png"
+                }
+                alt="activity_dummy"
+                width={200}
+                height={150}
+                className="w-full object-cover"
+              />
+              <Badge className="absolute bottom-2 right-2 text-sm">
+                {activity.category}
+              </Badge>
+            </div>
+            <div className="flex w-full justify-between pt-3 text-lg font-bold">
+              <div className="flex flex-row items-center justify-center">
+                <FaWheelchair className="mr-2" />
+                <p>{activity.difficulty} / 10</p>
+              </div>
+              <div className="flex flex-row items-center justify-center">
+                <p>+{activity.defaultScore}</p>
+                <FaAngleUp className="ml-1 h-6 w-6" />
+              </div>
             </div>
 
-            <CardContent>
-                <CardDescription>Beschreibung einer sehr anspruchsvollen Aktivität</CardDescription>
-                <form>
-                    <div className="grid w-full items-center gap-4">
+            <CardTitle>{activity.title}</CardTitle>
+          </CardHeader>
+        </Link>
+      </div>
 
-                    </div>
-                </form>
-            </CardContent>
-            <CardFooter className="flex justify-between">
-                <Difficulty />
-                <Button>Accept</Button>
-            </CardFooter>
-        </Card>
-    )
+      <CardContent>
+        <CardDescription className="line-clamp-3">
+          {activity.description || "Keine Beschreibung vorhanden."}
+        </CardDescription>
+      </CardContent>
+      <CardFooter className="flex justify-end">
+        <Dialog
+          open={confirmationDialogOpen}
+          onOpenChange={(open) => setConfirmationDialogOpen(open)}
+        >
+          <Button onClick={() => setConfirmationDialogOpen(true)}>
+            Abschließen
+          </Button>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Hast du diese Challenge erfüllt?</DialogTitle>
+              <DialogDescription>
+                Bitte bestätige, dass du diese Challenge erfüllt hast.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <DialogClose>Abbrechen</DialogClose>
+              <Button type="submit" onClick={handleConfirmCompletion}>
+                Bestätigen
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </CardFooter>
+    </Card>
+  );
 }
-
-export function Difficulty() {
-    return (
-        <div className="flex flex-col space-y-2.5 space-x-5" >
-            <Label htmlFor="name">+20Punkte</Label>
-            <div className="flex flex-row space-y-1.5">
-
-                <FaWheelchair />
-                <h3> 3/10</h3>
-            </div>
-        </div>
-    )
-}
-

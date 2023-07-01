@@ -76,14 +76,11 @@ export const authOptions: NextAuthOptions = {
           where: { email: creds.email },
         });
 
-        console.log(user);
-
         if (!user) {
           return null;
         }
 
         const isValidPassword = await verify(user.password!, creds.password);
-        console.log("valid? :", isValidPassword);
 
         if (!isValidPassword) {
           return null;
