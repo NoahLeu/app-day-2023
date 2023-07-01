@@ -13,15 +13,6 @@ import { FaAngleUp, FaWheelchair } from "react-icons/fa";
 import { Badge } from "./ui/badge";
 import { type Challenge } from "@/types/challenge";
 import {
-<<<<<<< HEAD
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
-import { FaWheelchair } from "react-icons/fa"
-=======
   Dialog,
   DialogContent,
   DialogDescription,
@@ -35,7 +26,6 @@ import { useState } from "react";
 import { api } from "@/utils/api";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
->>>>>>> main
 
 type Props = {
   activity: Challenge;

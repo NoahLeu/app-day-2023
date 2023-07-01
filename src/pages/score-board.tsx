@@ -1,5 +1,6 @@
 // our-domain.com/score-board
 
+import { ActivityDetail } from "@/components/ActivityDetail";
 import { ScoreBoard } from "@/components/ScoreBoard";
 import { type UserScore } from "@/types/scoreboard";
 import { api } from "@/utils/api";
@@ -32,6 +33,7 @@ export const ScoreBoardPage = () => {
         <FaSyncAlt className="h-7 w-7" />
       </button>
       <ScoreBoard users={users} />
+      <ActivityDetail />
     </div>
   );
 };
