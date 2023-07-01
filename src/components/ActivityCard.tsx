@@ -1,4 +1,3 @@
-import * as React from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,12 +12,54 @@ import { Label } from "@/components/ui/label";
 import { FaAngleUp, FaWheelchair } from "react-icons/fa";
 import { Badge } from "./ui/badge";
 import { type Challenge } from "@/types/challenge";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
+import { DialogClose } from "@radix-ui/react-dialog";
+import { useState } from "react";
+import { api } from "@/utils/api";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 type Props = {
   activity: Challenge;
 };
 
 export function ActivityCard({ activity }: Props) {
+  const session = useSession();
+  const router = useRouter();
+  const [confirmationDialogOpen, setConfirmationDialogOpen] =
+    useState<boolean>(false);
+
+  const confirmationMutation = api.challenge.completeChallenge.useMutation();
+
+  const handleConfirmCompletion = () => {
+    if (!activity.id || !session?.data?.user?.email) {
+      console.log("failed: ", activity.id, session?.data?.user?.email);
+
+      return;
+    }
+
+    confirmationMutation
+      .mutateAsync({
+        email: session.data.user.email,
+        challengeID: activity.id,
+      })
+      .then(() => {
+        setConfirmationDialogOpen(false);
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
   return (
     <Card className="w-full max-w-md">
       <div className="flex flex-col items-center justify-center">
@@ -59,7 +100,26 @@ export function ActivityCard({ activity }: Props) {
         </CardDescription>
       </CardContent>
       <CardFooter className="flex justify-end">
-        <Button>Abschließen</Button>
+        <Dialog
+          open={confirmationDialogOpen}
+          onOpenChange={(open) => setConfirmationDialogOpen(open)}
+        >
+          <DialogTrigger>Abschließen</DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Hast du diese Challenge erfüllt?</DialogTitle>
+              <DialogDescription>
+                Bitte bestätige, dass du diese Challenge erfüllt hast.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <DialogClose>Abbrechen</DialogClose>
+              <Button type="submit" onClick={handleConfirmCompletion}>
+                Bestätigen
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </CardFooter>
     </Card>
   );

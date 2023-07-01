@@ -11,11 +11,16 @@ const ChallengeRefreshButton = () => {
       return;
     }
 
-    mutation.mutate({
-      userEmail: session.data.user.email,
-    });
-
-    window.location.reload();
+    mutation
+      .mutateAsync({
+        userEmail: session.data.user.email,
+      })
+      .then(() => {
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   };
 
   return (
