@@ -8,6 +8,7 @@ import { type Session } from "next-auth";
 import { useEffect, useState } from "react";
 import { type Challenge } from "@/types/challenge";
 import ChallengeRefreshButton from "@/components/ChallengeRefreshButton";
+import RiskLevelSlider from "@/components/RiskLevelSlider";
 
 export default function Home() {
   const [activeChallenge, setActiveChallenge] = useState<Challenge | null>(
@@ -104,10 +105,12 @@ export default function Home() {
       </Head>
       <main className="flex flex-grow items-center">
         <div className="flex flex-grow flex-col content-center items-center justify-center px-6">
+          <RiskLevelSlider/>
           {dataIsLoading ? (
             <LoadingLayout />
           ) : activeChallenge ? (
             <>
+
               <ActivityCard activity={activeChallenge} />
               <ChallengeRefreshButton />
             </>
