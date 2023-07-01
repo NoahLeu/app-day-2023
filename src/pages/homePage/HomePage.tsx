@@ -7,7 +7,22 @@ const HomePage = () => {
     <div className="min-h-screen bg-black">
       {/* <ActivityCard />
             <ScoreBoard /> */}
-      <ActivityDetail />
+      <ActivityDetail activity={{
+        id: "",
+        title: "",
+        image: "",
+        description: "",
+        category: "",
+        location: {
+          id: 0,
+          name: "",
+          latitude: 0,
+          longitude: 0,
+          address: ""
+        },
+        difficulty: 0,
+        defaultScore: 0
+      }} />
     </div>
   );
 };
