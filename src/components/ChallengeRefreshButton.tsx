@@ -2,7 +2,13 @@ import { api } from "@/utils/api";
 import { useSession } from "next-auth/react";
 import { FaSyncAlt } from "react-icons/fa";
 
-const ChallengeRefreshButton = () => {
+type Props = {
+  riskLevel: number;
+}
+
+const ChallengeRefreshButton = (
+  {riskLevel}: Props
+) => {
   const session = useSession();
   const mutation = api.challenge.getNewChallenge.useMutation();
 
@@ -14,6 +20,8 @@ const ChallengeRefreshButton = () => {
     mutation
       .mutateAsync({
         userEmail: session.data.user.email,
+        riskLevel: riskLevel
+
       })
       .then(() => {
         window.location.reload();

@@ -17,6 +17,7 @@ export default function Home() {
   const session = useSession();
   const mutation = api.challenge.getNewChallenge.useMutation();
   const [dataIsLoading, setDataIsLoading] = useState<boolean>(true);
+  const [riskLevel, setRiskLevel] = useState<number>(4);
 
   const userReq = api.auth.me.useQuery(
     {
@@ -47,6 +48,7 @@ export default function Home() {
     mutation
       .mutateAsync({
         userEmail: session.data.user.email,
+        riskLevel: riskLevel,
       })
       .then(() => {
         window.location.reload();
@@ -67,6 +69,10 @@ export default function Home() {
       setDataIsLoading(false);
       return;
     }
+
+    setRiskLevel(
+      userReq?.data?.user?.riskLevel ? userReq.data.user.riskLevel : 4
+    );
 
     await challengeReq.refetch();
 
@@ -94,25 +100,24 @@ export default function Home() {
 
   return (
     <>
-          <RiskLevelSlider/>
-        <div className="flex flex-grow flex-col content-center items-center justify-center px-6">
-          {dataIsLoading ? (
-            <LoadingLayout />
-          ) : activeChallenge ? (
-            <>
-
-              <ActivityCard activity={activeChallenge} />
-              <ChallengeRefreshButton />
-            </>
-          ) : (
-            <>
-              <h1 className="mb-4 text-center text-xl">
-                Du hast aktuell keine Challenge ausgewählt.
-              </h1>
-              <Button onClick={handleNewChallenge}>Neue Challenge</Button>
-            </>
-          )}
-        </div>
+      <RiskLevelSlider value={riskLevel} setValue={setRiskLevel} />
+      <div className="flex flex-grow flex-col content-center items-center justify-center px-6">
+        {dataIsLoading ? (
+          <LoadingLayout />
+        ) : activeChallenge ? (
+          <>
+            <ActivityCard activity={activeChallenge} />
+            <ChallengeRefreshButton riskLevel={riskLevel} />
+          </>
+        ) : (
+          <>
+            <h1 className="mb-4 text-center text-xl">
+              Du hast aktuell keine Challenge ausgewählt.
+            </h1>
+            <Button onClick={handleNewChallenge}>Neue Challenge</Button>
+          </>
+        )}
+      </div>
     </>
   );
 }

@@ -101,9 +101,14 @@ export const challengeRouter = createTRPCRouter({
     }),
 
   getNewChallenge: publicProcedure
-    .input(z.object({ userEmail: z.string().email() }))
+    .input(
+      z.object({
+        userEmail: z.string().email(),
+        riskLevel: z.number().gt(0).lt(11),
+      })
+    )
     .mutation(async ({ input, ctx }) => {
-      const { userEmail } = input;
+      const { userEmail, riskLevel } = input;
 
       const user = await ctx.prisma.user.findUnique({
         where: {
@@ -184,6 +189,7 @@ export const challengeRouter = createTRPCRouter({
       const chosenChallengePair: ChallengeResult | null = getNewChallenge(
         finalChallenges,
         userLocation,
+        riskLevel,
         activeChallenge
       );
 
@@ -203,6 +209,7 @@ export const challengeRouter = createTRPCRouter({
         data: {
           activeChallengeId: chosenChallengePair.challenge.id,
           activeChallengeScore: chosenChallengePair.score,
+          riskLevel: riskLevel,
         },
       });
 
