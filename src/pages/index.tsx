@@ -97,15 +97,8 @@ export default function Home() {
 
   return (
     <>
-      <Head>
-        <title>MVP1</title>
-        {/* TODO: fill out meta*/}
-        <meta name="description" content="" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <main className="flex flex-grow items-center">
-        <div className="flex flex-grow flex-col content-center items-center justify-center px-6">
           <RiskLevelSlider/>
+        <div className="flex flex-grow flex-col content-center items-center justify-center px-6">
           {dataIsLoading ? (
             <LoadingLayout />
           ) : activeChallenge ? (
@@ -123,7 +116,6 @@ export default function Home() {
             </>
           )}
         </div>
-      </main>
     </>
   );
 }
