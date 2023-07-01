@@ -7,6 +7,7 @@ import LoadingLayout from "@/components/session/LoadingLayout";
 import { type Session } from "next-auth";
 import { useEffect, useState } from "react";
 import { type Challenge } from "@/types/challenge";
+import ChallengeRefreshButton from "@/components/ChallengeRefreshButton";
 
 export default function Home() {
   const [activeChallenge, setActiveChallenge] = useState<Challenge | null>(
@@ -14,13 +15,27 @@ export default function Home() {
   );
   const session = useSession();
   const mutation = api.challenge.getNewChallenge.useMutation();
+  const [dataIsLoading, setDataIsLoading] = useState<boolean>(true);
 
-  const userReq = api.auth.me.useQuery({});
+  const userReq = api.auth.me.useQuery(
+    {
+      email: session?.data?.user?.email || "",
+    },
+    {
+      enabled: false,
+    }
+  );
+
   const [userChallengeID, setUserChallengeID] = useState<string>("");
 
-  const challengeReq = api.challenge.getChallenge.useQuery({
-    id: userChallengeID,
-  });
+  const challengeReq = api.challenge.getChallenge.useQuery(
+    {
+      id: userChallengeID,
+    },
+    {
+      enabled: false,
+    }
+  );
 
   const handleNewChallenge = () => {
     if (!session?.data?.user?.email) {
@@ -34,12 +49,15 @@ export default function Home() {
     // window.location.reload();
   };
 
-  const getActiveChallenge = () => {
+  const getActiveChallenge = async () => {
     if (!session?.data?.user) {
       return;
     }
 
+    await userReq.refetch();
+
     if (!userReq.isSuccess || !userReq.data.user.activeChallengeId) {
+      setDataIsLoading(false);
       return;
     }
 
@@ -47,22 +65,25 @@ export default function Home() {
     //   id: userReq.data.user.activeChallengeId,
     // });
 
+    await challengeReq.refetch();
+
     if (!challengeReq.isSuccess || !challengeReq.data.challenge) {
+      setDataIsLoading(false);
       return;
     }
-    console.log("can set");
 
     setActiveChallenge(challengeReq.data.challenge);
+    setDataIsLoading(false);
   };
 
   useEffect(() => {
     if (userReq.isSuccess && userReq.data.user) {
       setUserChallengeID(userReq.data.user.activeChallengeId);
     }
-  }, [userReq.isSuccess]);
+  }, [userReq.isSuccess, userReq.data?.user?.activeChallengeId]);
 
   useEffect(() => {
-    getActiveChallenge();
+    void getActiveChallenge();
   }, [session.status, userReq.isSuccess, challengeReq.isSuccess]);
 
   if (session.status === "loading" || session.status === "unauthenticated")
@@ -78,9 +99,12 @@ export default function Home() {
       </Head>
       <main className="flex flex-grow items-center">
         <div className="flex flex-grow flex-col content-center items-center justify-center px-6">
-          {activeChallenge !== null ? (
+          {dataIsLoading ? (
+            <LoadingLayout />
+          ) : activeChallenge ? (
             <>
-              <ActivityCard />
+              <ActivityCard activity={activeChallenge} />
+              <ChallengeRefreshButton />
             </>
           ) : (
             <>
@@ -88,7 +112,6 @@ export default function Home() {
                 Du hast aktuell keine Challenge ausgewählt.
               </h1>
               <Button onClick={handleNewChallenge}>Neue Challenge</Button>
-              {/* <ChallengeRefreshButton /> */}
             </>
           )}
         </div>
