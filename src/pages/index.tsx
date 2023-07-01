@@ -1,56 +1,72 @@
 import Head from "next/head";
-import Challenge from "@/pages/challenge";
 import { api } from "@/utils/api";
 import { signIn, useSession } from "next-auth/react";
+import { ActivityCard } from "@/components/ActivityCard";
+import { Button } from "@/components/ui/button";
+import LoadingLayout from "@/components/session/LoadingLayout";
+import { type Session } from "next-auth";
+import { useEffect, useState } from "react";
+import { type Challenge } from "@/types/challenge";
 
-// getServersideProps
-export function getServerSideProps() {
-  // get current user challenge
-  // const userRes = api.auth.me.useQuery({});
-
-  // if (!userRes.isSuccess || !userRes.data.user.activeChallengeId) {
-  //   return {
-  //     challenge: null,
-  //   };
-  // }
-
-  // const challengeRes = api.challenge.getChallenge.useQuery({
-  //   id: userRes.data.user.activeChallengeId,
-  // });
-
-  // if (!challengeRes.isSuccess) {
-  //   return {
-  //     challenge: null,
-  //   };
-  // }
-
-  // return {
-  //   props: {
-  //     challenge: challengeRes.data.challenge,
-  //   },
-  // };
-
-  return {
-    props: {
-      challenge: null,
-    },
-  };
-}
-
-type Props = {
-  challenge: Challenge;
-};
-export default function Home({ challenge }: Props) {
-  // use session nextauth
+export default function Home() {
+  const [activeChallenge, setActiveChallenge] = useState<Challenge | null>(
+    null
+  );
   const session = useSession();
+  const mutation = api.challenge.getNewChallenge.useMutation();
 
-  if (session.status === "loading") {
-    return <div>Loading...</div>;
-  }
+  const userReq = api.auth.me.useQuery({});
+  const [userChallengeID, setUserChallengeID] = useState<string>("");
 
-  if (session.status !== "authenticated") {
-    return <button onClick={() => void signIn()}>Sign in</button>;
-  }
+  const challengeReq = api.challenge.getChallenge.useQuery({
+    id: userChallengeID,
+  });
+
+  const handleNewChallenge = () => {
+    if (!session?.data?.user?.email) {
+      return;
+    }
+
+    mutation.mutate({
+      userEmail: session.data.user.email,
+    });
+
+    // window.location.reload();
+  };
+
+  const getActiveChallenge = () => {
+    if (!session?.data?.user) {
+      return;
+    }
+
+    if (!userReq.isSuccess || !userReq.data.user.activeChallengeId) {
+      return;
+    }
+
+    // const challengeReq = api.challenge.getChallenge.useQuery({
+    //   id: userReq.data.user.activeChallengeId,
+    // });
+
+    if (!challengeReq.isSuccess || !challengeReq.data.challenge) {
+      return;
+    }
+    console.log("can set");
+
+    setActiveChallenge(challengeReq.data.challenge);
+  };
+
+  useEffect(() => {
+    if (userReq.isSuccess && userReq.data.user) {
+      setUserChallengeID(userReq.data.user.activeChallengeId);
+    }
+  }, [userReq.isSuccess]);
+
+  useEffect(() => {
+    getActiveChallenge();
+  }, [session.status, userReq.isSuccess, challengeReq.isSuccess]);
+
+  if (session.status === "loading" || session.status === "unauthenticated")
+    return <LoadingLayout />;
 
   return (
     <>
@@ -61,7 +77,21 @@ export default function Home({ challenge }: Props) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex flex-grow items-center">
-        <Challenge challenge={challenge} />
+        <div className="flex flex-grow flex-col content-center items-center justify-center px-6">
+          {activeChallenge !== null ? (
+            <>
+              <ActivityCard />
+            </>
+          ) : (
+            <>
+              <h1 className="mb-4 text-center text-xl">
+                Du hast aktuell keine Challenge ausgewählt.
+              </h1>
+              <Button onClick={handleNewChallenge}>Neue Challenge</Button>
+              {/* <ChallengeRefreshButton /> */}
+            </>
+          )}
+        </div>
       </main>
     </>
   );

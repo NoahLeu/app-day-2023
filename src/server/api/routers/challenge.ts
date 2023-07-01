@@ -74,7 +74,7 @@ export const challengeRouter = createTRPCRouter({
           id: userID,
         },
         data: {
-          challenge_score: (user.challenge_score as number) + challengeScore,
+          challenge_score: user.challenge_score + challengeScore,
         },
       });
 
@@ -86,13 +86,13 @@ export const challengeRouter = createTRPCRouter({
     }),
 
   getNewChallenge: publicProcedure
-    .input(z.object({ userID: z.string() }))
+    .input(z.object({ userEmail: z.string().email() }))
     .mutation(async ({ input, ctx }) => {
-      const { userID } = input;
+      const { userEmail } = input;
 
       const user = await ctx.prisma.user.findUnique({
         where: {
-          id: userID,
+          email: userEmail,
         },
       });
 
@@ -101,6 +101,8 @@ export const challengeRouter = createTRPCRouter({
       }
 
       const challenges = await ctx.prisma.challenge.findMany();
+
+      console.log(challenges);
 
       if (challenges.length === 0) {
         throw new Error("No challenges found");
@@ -132,7 +134,7 @@ export const challengeRouter = createTRPCRouter({
       // update user active challenge
       const updatedUser = await ctx.prisma.user.update({
         where: {
-          id: userID,
+          email: userEmail,
         },
         data: {
           activeChallengeId: randomChallenge.id,
@@ -141,8 +143,9 @@ export const challengeRouter = createTRPCRouter({
 
       return {
         status: 200,
-        message: "Challenge found",
+        message: "New challenge found",
         challenge: randomChallenge,
+        user: updatedUser,
       };
     }),
 
