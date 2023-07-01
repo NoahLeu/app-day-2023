@@ -22,7 +22,7 @@ import {
 } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { FaAngleUp, FaFire, FaWheelchair } from "react-icons/fa";
-import { Badge } from "lucide-react";
+import { Badge } from "./ui/badge";
 import { Challenge } from "@/types/challenge";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -78,7 +78,7 @@ export function ActivityDetail({ activity }: Props) {
                 height={150}
                 className="w-full object-cover"
               />
-              <Badge className="absolute bottom-2 right-2 text-sm">
+              <Badge className="absolute bottom-2 right-2 z-10 text-sm">
                 {activity.category}
               </Badge>
             </div>

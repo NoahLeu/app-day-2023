@@ -24,7 +24,10 @@ const ChallengeRefreshButton = () => {
   };
 
   return (
-    <button className="rounded-full p-4 shadow-sm" onClick={handleNewChallenge}>
+    <button
+      className="mt-4 rounded-full p-4 shadow-sm"
+      onClick={handleNewChallenge}
+    >
       <FaSyncAlt className="h-7 w-7" />
     </button>
   );
