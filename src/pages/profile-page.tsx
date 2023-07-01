@@ -1,7 +1,7 @@
 // link profile-page from ProfilePage.tsx
 // import ProfilePAge
 
-import { ProfilePage } from "@/components/ProfilePage";
+import {ProfilePage} from "@/components/ProfilePage";
 
 
 const User = {
@@ -12,11 +12,7 @@ const User = {
 }
 
 const ProfilePagePage = () => {
-  return (
-
-    <ProfilePage name={User.name} email={User.email} location={User.location} score={User.score} />
-
-  );
+    return <ProfilePage name={User.name} email={User.email} location={User.location} score={User.score}/>
 }
 
 export default ProfilePagePage;
