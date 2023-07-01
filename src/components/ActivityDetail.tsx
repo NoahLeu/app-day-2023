@@ -56,7 +56,7 @@ export function ActivityDetail({ activity }: Props) {
       })
       .then(() => {
         setConfirmationDialogOpen(false);
-        window.location.reload();
+        void router.push("/");
       })
       .catch((err) => {
         console.error(err);
@@ -94,7 +94,7 @@ export function ActivityDetail({ activity }: Props) {
                 <FaAngleUp className="ml-1 h-6 w-6" />
               </div>
             </div>
-            <CardTitle className="pt-2">{activity.title}</CardTitle>
+            <CardTitle>{activity.title}</CardTitle>
             <div className="py-0">
               <CardDescription className="text-xs">
                 {" "}
@@ -126,30 +126,29 @@ export function ActivityDetail({ activity }: Props) {
           </form>
         </CardContent>
         <CardFooter className="flex justify-end">
-          <Button onClick={() => setConfirmationDialogOpen(true)}>
-            Abschließen
-          </Button>
+          <Dialog
+            open={confirmationDialogOpen}
+            onOpenChange={(open: boolean) => setConfirmationDialogOpen(open)}
+          >
+            <Button onClick={() => setConfirmationDialogOpen(true)}>
+              Abschließen
+            </Button>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Hast du diese Challenge erfüllt?</DialogTitle>
+                <DialogDescription>
+                  Bitte bestätige, dass du diese Challenge erfüllt hast.
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <DialogClose>Abbrechen</DialogClose>
+                <Button type="submit" onClick={handleConfirmCompletion}>
+                  Bestätigen
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </CardFooter>
-        <Dialog
-          open={confirmationDialogOpen}
-          onOpenChange={(open: boolean) => setConfirmationDialogOpen(open)}
-        >
-          <DialogTrigger>Abschließen</DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Hast du diese Challenge erfüllt?</DialogTitle>
-              <DialogDescription>
-                Bitte bestätige, dass du diese Challenge erfüllt hast.
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
-              <DialogClose>Abbrechen</DialogClose>
-              <Button type="submit" onClick={handleConfirmCompletion}>
-                Bestätigen
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
       </Card>
     </ScrollArea>
   );
