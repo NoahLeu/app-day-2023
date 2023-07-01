@@ -3,13 +3,13 @@ import { ScoreBoard } from "@/components/ScoreBoard";
 import { ActivityDetail } from "@/components/ActivityDetail";
 
 const HomePage = () => {
-    return (
-        <div className="bg-black min-h-screen">
-            {/* <ActivityCard />
+  return (
+    <div className="min-h-screen bg-black">
+      {/* <ActivityCard />
             <ScoreBoard /> */}
-            <ActivityDetail />
-        </div>
-    )
-}
+      <ActivityDetail />
+    </div>
+  );
+};
 
 export default HomePage;
