@@ -32,6 +32,8 @@ export const getDistance = (
 ): number => {
   const earthRadius = 6371; // Radius of the Earth in kilometers
 
+  console.log(userLocation, eventLocation);
+
   // Convert latitude and longitude from degrees to radians
   const lat1Rad = (userLocation.latitude * Math.PI) / 180;
   const lon1Rad = (userLocation.longitude * Math.PI) / 180;

@@ -102,13 +102,37 @@ export const challengeRouter = createTRPCRouter({
 
       const challenges = await ctx.prisma.challenge.findMany();
 
-      console.log(challenges);
-
       if (challenges.length === 0) {
         throw new Error("No challenges found");
       }
 
+      const locationLinkedChallenges: Challenge[] = [];
+
+      for (let i = 0; i < challenges.length; i++) {
+        const challenge = challenges[i];
+
+        if (!challenge?.locationId) {
+          throw new Error("Challenge has no location");
+        }
+
+        const location = await ctx.prisma.location.findUnique({
+          where: {
+            id: challenge.locationId,
+          },
+        });
+
+        if (!location) {
+          throw new Error("Location not found");
+        }
+
+        locationLinkedChallenges.push({
+          ...challenge,
+          location,
+        });
+      }
+
       let activeChallenge: Challenge | null = null;
+      let finalChallenges = locationLinkedChallenges;
 
       if (user.activeChallengeId) {
         activeChallenge = await ctx.prisma.challenge.findUnique({
@@ -122,11 +146,11 @@ export const challengeRouter = createTRPCRouter({
         }
 
         // filter out challenges that the user is currently doing
-        const filteredChallenges = challenges.filter((challenge) => {
+        finalChallenges = locationLinkedChallenges.filter((challenge) => {
           return user.activeChallengeId !== challenge.id;
         });
 
-        if (filteredChallenges.length === 0) {
+        if (finalChallenges.length === 0) {
           throw new Error("No challenges found");
         }
       }
@@ -134,7 +158,7 @@ export const challengeRouter = createTRPCRouter({
       const userLocation: Location | null =
         await ctx.prisma.location.findUnique({
           where: {
-            id: user.userLocationId!,
+            id: user.userLocationId,
           },
         });
 
@@ -143,7 +167,7 @@ export const challengeRouter = createTRPCRouter({
       }
 
       const chosenChallengePair: ChallengeResult | null = getNewChallenge(
-        challenges,
+        finalChallenges,
         userLocation,
         activeChallenge
       );
@@ -170,7 +194,7 @@ export const challengeRouter = createTRPCRouter({
       return {
         status: 200,
         message: "New challenge found",
-        challenge: randomChallenge,
+        challenge: chosenChallengePair.challenge,
         user: updatedUser,
       };
     }),
