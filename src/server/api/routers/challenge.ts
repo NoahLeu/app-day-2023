@@ -39,16 +39,16 @@ export const challengeRouter = createTRPCRouter({
   completeChallenge: publicProcedure
     .input(
       z.object({
-        userID: z.string(),
+        email: z.string().email(),
         challengeID: z.string(),
       })
     )
     .mutation(async ({ input, ctx }) => {
-      const { userID, challengeID } = input;
+      const { email, challengeID } = input;
 
       const user = await ctx.prisma.user.findUnique({
         where: {
-          id: userID,
+          email: email,
         },
       });
 
@@ -71,10 +71,11 @@ export const challengeRouter = createTRPCRouter({
       // update user score
       const updatedUser = await ctx.prisma.user.update({
         where: {
-          id: userID,
+          email: email,
         },
         data: {
           challenge_score: user.challenge_score + challengeScore,
+          activeChallengeId: null,
         },
       });
 

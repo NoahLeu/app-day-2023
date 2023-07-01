@@ -1,11 +1,26 @@
 import { api } from "@/utils/api";
+import { useSession } from "next-auth/react";
 import { FaSyncAlt } from "react-icons/fa";
 
 const ChallengeRefreshButton = () => {
+  const session = useSession();
+  const mutation = api.challenge.getNewChallenge.useMutation();
+
   const handleNewChallenge = () => {
-    api.challenge.getNewChallenge.useMutation({});
-    // refresh page
-    window.location.reload();
+    if (!session?.data?.user?.email) {
+      return;
+    }
+
+    mutation
+      .mutateAsync({
+        userEmail: session.data.user.email,
+      })
+      .then(() => {
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   };
 
   return (
