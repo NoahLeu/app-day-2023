@@ -30,6 +30,7 @@ export default function Home() {
 
   const challengeReq = api.challenge.getChallenge.useQuery(
     {
+      email: session?.data?.user?.email || "",
       id: userChallengeID,
     },
     {
@@ -55,7 +56,7 @@ export default function Home() {
   };
 
   const getActiveChallenge = async () => {
-    if (!session?.data?.user) {
+    if (!session?.data?.user?.email) {
       return;
     }
 
@@ -65,10 +66,6 @@ export default function Home() {
       setDataIsLoading(false);
       return;
     }
-
-    // const challengeReq = api.challenge.getChallenge.useQuery({
-    //   id: userReq.data.user.activeChallengeId,
-    // });
 
     await challengeReq.refetch();
 
