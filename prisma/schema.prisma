@@ -49,17 +49,20 @@ model Session {
 }
 
 model User {
-    id                String     @id @default(cuid())
-    username          String     @unique
-    email             String     @unique
-    emailVerified     DateTime?
-    password          String? // @db.Text
-    image             String?
-    challenge_score   Int        @default(0)
-    active_challenge  Challenge? @relation(fields: [activeChallengeId], references: [id])
-    activeChallengeId String?
-    accounts          Account[]
-    sessions          Session[]
+    id                   String     @id @default(cuid())
+    username             String     @unique
+    email                String     @unique
+    emailVerified        DateTime?
+    password             String? // @db.Text
+    image                String?
+    challenge_score      Int        @default(0)
+    active_challenge     Challenge? @relation(fields: [activeChallengeId], references: [id])
+    activeChallengeId    String?
+    activeChallengeScore Int?       @default(0)
+    userLocation         Location   @relation(fields: [userLocationId], references: [id])
+    userLocationId       String
+    accounts             Account[]
+    sessions             Session[]
 }
 
 model VerificationToken {
@@ -91,4 +94,5 @@ model Location {
     name       String
     address    String
     challenges Challenge[]
+    User       User[]
 }
