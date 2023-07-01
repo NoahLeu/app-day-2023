@@ -8,6 +8,7 @@ import { type Session } from "next-auth";
 import { useEffect, useState } from "react";
 import { type Challenge } from "@/types/challenge";
 import ChallengeRefreshButton from "@/components/ChallengeRefreshButton";
+import RiskLevelSlider from "@/components/RiskLevelSlider";
 
 export default function Home() {
   const [activeChallenge, setActiveChallenge] = useState<Challenge | null>(
@@ -93,18 +94,13 @@ export default function Home() {
 
   return (
     <>
-      <Head>
-        <title>MVP1</title>
-        {/* TODO: fill out meta*/}
-        <meta name="description" content="" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <main className="flex flex-grow items-center">
+          <RiskLevelSlider/>
         <div className="flex flex-grow flex-col content-center items-center justify-center px-6">
           {dataIsLoading ? (
             <LoadingLayout />
           ) : activeChallenge ? (
             <>
+
               <ActivityCard activity={activeChallenge} />
               <ChallengeRefreshButton />
             </>
@@ -117,7 +113,6 @@ export default function Home() {
             </>
           )}
         </div>
-      </main>
     </>
   );
 }
