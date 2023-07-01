@@ -55,6 +55,7 @@ model User {
     emailVerified        DateTime?
     password             String? // @db.Text
     image                String?
+    riskLevel            Int        @default(4)
     challenge_score      Int        @default(0)
     active_challenge     Challenge? @relation(fields: [activeChallengeId], references: [id])
     activeChallengeId    String?

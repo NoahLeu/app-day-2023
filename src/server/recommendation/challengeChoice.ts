@@ -10,6 +10,7 @@ export type ChallengeResult = {
 export const getNewChallenge = (
   challenges: Challenge[],
   userLocation: Location,
+  userRiskLevel: number,
   activeChallenge: Challenge | null
 ): ChallengeResult | null => {
   if (!challenges || challenges.length === 0) return null;
@@ -18,6 +19,8 @@ export const getNewChallenge = (
     const score: number = getChallengeScore(challenge, userLocation);
     return { challenge, score };
   });
+
+  console.log("scores to look at:", scores);
 
   const shuffleChallenges: ChallengeResult[] = [];
 
@@ -59,6 +62,35 @@ export const getNewChallenge = (
     } else {
       shuffleChallenges.push(challenge);
     }
+
+    if (
+      challenge.challenge.difficulty <= userRiskLevel + 1 &&
+      challenge.challenge.difficulty >= userRiskLevel - 1
+    ) {
+      console.log("adding more challenges of same difficulty");
+
+      shuffleChallenges.push(challenge);
+      shuffleChallenges.push(challenge);
+      shuffleChallenges.push(challenge);
+      shuffleChallenges.push(challenge);
+      shuffleChallenges.push(challenge);
+      shuffleChallenges.push(challenge);
+      shuffleChallenges.push(challenge);
+      shuffleChallenges.push(challenge);
+      shuffleChallenges.push(challenge);
+      shuffleChallenges.push(challenge);
+      shuffleChallenges.push(challenge);
+      shuffleChallenges.push(challenge);
+      shuffleChallenges.push(challenge);
+    } else if (
+      challenge.challenge.difficulty <= userRiskLevel + 2 &&
+      challenge.challenge.difficulty >= userRiskLevel - 2
+    ) {
+      shuffleChallenges.push(challenge);
+      shuffleChallenges.push(challenge);
+      shuffleChallenges.push(challenge);
+      shuffleChallenges.push(challenge);
+    }
   });
 
   // shuffle the array
@@ -66,7 +98,7 @@ export const getNewChallenge = (
 
   // return the first element
   return {
-    challenge: scores[0]?.challenge ?? null,
-    score: scores[0]?.score ?? 0,
+    challenge: shuffleChallenges[0]?.challenge ?? null,
+    score: shuffleChallenges[0]?.score ?? 0,
   };
 };

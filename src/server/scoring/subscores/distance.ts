@@ -13,17 +13,19 @@ export const distanceScore = (
 };
 
 const getDistanceMultiplier = (distance: number): number => {
-  // if it is between 10 and 200 km (or above) return an exponential function growing from 1 to 2
-  if (distance >= 10 && distance <= 200) {
-    return 1 + (distance / 200) * (distance / 200);
-  }
+  // exponential function that grows from 0 to 1 between 0 and 10km and goes up to 2 between 10 and 200km
+  // if it is above 200km it will return 2
+  const mathFunction = (x: number) => {
+    if (x >= 0 && x <= 10) {
+      return 0.7 + (x / 10) * 0.3;
+    } else if (x >= 10 && x <= 200) {
+      return Math.pow(2, (x - 10) / 190) * 1;
+    } else if (x > 200) {
+      return 2;
+    } else return 1;
+  };
 
-  // if it is between 0 and 10 km return a linear function growing from 0.45 to 1
-  if (distance >= 0 && distance < 10) {
-    return 0.45 + (distance / 10) * (distance / 10);
-  }
-
-  return 1;
+  return mathFunction(distance);
 };
 
 export const getDistance = (
