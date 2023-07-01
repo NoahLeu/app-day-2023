@@ -33,7 +33,6 @@ export const ScoreBoardPage = () => {
         <FaSyncAlt className="h-7 w-7" />
       </button>
       <ScoreBoard users={users} />
-      <ActivityDetail />
     </div>
   );
 };

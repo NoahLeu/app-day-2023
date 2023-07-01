@@ -26,6 +26,7 @@ import { useState } from "react";
 import { api } from "@/utils/api";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 type Props = {
   activity: Challenge;
@@ -61,66 +62,68 @@ export function ActivityCard({ activity }: Props) {
   };
 
   return (
-    <Card className="w-full max-w-md">
-      <div className="flex flex-col items-center justify-center">
-        <CardHeader className="w-full">
-          <CardTitle className="pt-2">{activity.title}</CardTitle>
-          <div className="relative h-fit w-full">
-            <Image
-              src={
-                activity.image && activity.image != "null"
-                  ? activity.image
-                  : "/images/activity_dummy.png"
-              }
-              alt="activity_dummy"
-              width={200}
-              height={150}
-              className="w-full object-cover"
-            />
-            <Badge className="absolute bottom-2 right-2 text-sm">
-              {activity.category}
-            </Badge>
-          </div>
-          <div className="flex w-full justify-between pt-3 text-lg font-bold">
-            <div className="flex flex-row items-center justify-center">
-              <FaWheelchair className="mr-2" />
-              <p>{activity.difficulty} / 10</p>
+    <Link href={"/challenge?id=" + activity.id}>
+      <Card className="w-full max-w-md">
+        <div className="flex flex-col items-center justify-center">
+          <CardHeader className="w-full">
+            <CardTitle className="pt-2">{activity.title}</CardTitle>
+            <div className="relative h-fit w-full">
+              <Image
+                src={
+                  activity.image && activity.image != "null"
+                    ? activity.image
+                    : "/images/activity_dummy.png"
+                }
+                alt="activity_dummy"
+                width={200}
+                height={150}
+                className="w-full object-cover"
+              />
+              <Badge className="absolute bottom-2 right-2 text-sm">
+                {activity.category}
+              </Badge>
             </div>
-            <div className="flex flex-row items-center justify-center">
-              <p>+{activity.defaultScore}</p>
-              <FaAngleUp className="ml-1 h-6 w-6" />
+            <div className="flex w-full justify-between pt-3 text-lg font-bold">
+              <div className="flex flex-row items-center justify-center">
+                <FaWheelchair className="mr-2" />
+                <p>{activity.difficulty} / 10</p>
+              </div>
+              <div className="flex flex-row items-center justify-center">
+                <p>+{activity.defaultScore}</p>
+                <FaAngleUp className="ml-1 h-6 w-6" />
+              </div>
             </div>
-          </div>
-        </CardHeader>
-      </div>
+          </CardHeader>
+        </div>
 
-      <CardContent>
-        <CardDescription>
-          {activity.description || "Keine Beschreibung vorhanden."}
-        </CardDescription>
-      </CardContent>
-      <CardFooter className="flex justify-end">
-        <Dialog
-          open={confirmationDialogOpen}
-          onOpenChange={(open) => setConfirmationDialogOpen(open)}
-        >
-          <DialogTrigger>Abschließen</DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Hast du diese Challenge erfüllt?</DialogTitle>
-              <DialogDescription>
-                Bitte bestätige, dass du diese Challenge erfüllt hast.
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
-              <DialogClose>Abbrechen</DialogClose>
-              <Button type="submit" onClick={handleConfirmCompletion}>
-                Bestätigen
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </CardFooter>
-    </Card>
+        <CardContent>
+          <CardDescription>
+            {activity.description || "Keine Beschreibung vorhanden."}
+          </CardDescription>
+        </CardContent>
+        <CardFooter className="flex justify-end">
+          <Dialog
+            open={confirmationDialogOpen}
+            onOpenChange={(open) => setConfirmationDialogOpen(open)}
+          >
+            <DialogTrigger>Abschließen</DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Hast du diese Challenge erfüllt?</DialogTitle>
+                <DialogDescription>
+                  Bitte bestätige, dass du diese Challenge erfüllt hast.
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <DialogClose>Abbrechen</DialogClose>
+                <Button type="submit" onClick={handleConfirmCompletion}>
+                  Bestätigen
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </CardFooter>
+      </Card>
+    </Link>
   );
 }
