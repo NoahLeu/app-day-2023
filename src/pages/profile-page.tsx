@@ -13,6 +13,7 @@ const User = {
 
 const ProfilePagePage = () => {
   return (
+
     <ProfilePage name={User.name} email={User.email} location={User.location} score={User.score} />
 
   );
