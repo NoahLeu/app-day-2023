@@ -62,11 +62,10 @@ export function ActivityCard({ activity }: Props) {
   };
 
   return (
-    <Link href={"/challenge?id=" + activity.id}>
-      <Card className="w-full max-w-md">
-        <div className="flex flex-col items-center justify-center">
+    <Card className="w-full max-w-md">
+      <div className="flex flex-col items-center justify-center">
+        <Link href={"/challenge?id=" + activity.id}>
           <CardHeader className="w-full">
-            <CardTitle className="pt-2">{activity.title}</CardTitle>
             <div className="relative h-fit w-full">
               <Image
                 src={
@@ -93,37 +92,41 @@ export function ActivityCard({ activity }: Props) {
                 <FaAngleUp className="ml-1 h-6 w-6" />
               </div>
             </div>
-          </CardHeader>
-        </div>
 
-        <CardContent>
-          <CardDescription>
-            {activity.description || "Keine Beschreibung vorhanden."}
-          </CardDescription>
-        </CardContent>
-        <CardFooter className="flex justify-end">
-          <Dialog
-            open={confirmationDialogOpen}
-            onOpenChange={(open) => setConfirmationDialogOpen(open)}
-          >
-            <DialogTrigger>Abschließen</DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Hast du diese Challenge erfüllt?</DialogTitle>
-                <DialogDescription>
-                  Bitte bestätige, dass du diese Challenge erfüllt hast.
-                </DialogDescription>
-              </DialogHeader>
-              <DialogFooter>
-                <DialogClose>Abbrechen</DialogClose>
-                <Button type="submit" onClick={handleConfirmCompletion}>
-                  Bestätigen
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </CardFooter>
-      </Card>
-    </Link>
+            <CardTitle>{activity.title}</CardTitle>
+          </CardHeader>
+        </Link>
+      </div>
+
+      <CardContent>
+        <CardDescription className="line-clamp-3">
+          {activity.description || "Keine Beschreibung vorhanden."}
+        </CardDescription>
+      </CardContent>
+      <CardFooter className="flex justify-end">
+        <Dialog
+          open={confirmationDialogOpen}
+          onOpenChange={(open) => setConfirmationDialogOpen(open)}
+        >
+          <Button onClick={() => setConfirmationDialogOpen(true)}>
+            Abschließen
+          </Button>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Hast du diese Challenge erfüllt?</DialogTitle>
+              <DialogDescription>
+                Bitte bestätige, dass du diese Challenge erfüllt hast.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <DialogClose>Abbrechen</DialogClose>
+              <Button type="submit" onClick={handleConfirmCompletion}>
+                Bestätigen
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </CardFooter>
+    </Card>
   );
 }

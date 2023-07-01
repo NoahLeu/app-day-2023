@@ -21,14 +21,9 @@ type Props = {
 
 export default function Challenge({ id }: Props) {
   const session = useSession();
-  const challengeReq = api.challenge.getChallenge.useQuery(
-    {
-      id: id,
-    },
-    {
-      enabled: false,
-    }
-  );
+  const challengeReq = api.challenge.getChallenge.useQuery({
+    id: id,
+  });
 
   if (session.status === "loading" || session.status === "unauthenticated")
     return <LoadingLayout />;
@@ -41,8 +36,8 @@ export default function Challenge({ id }: Props) {
         <meta name="description" content="" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="flex flex-grow items-center">
-        <div className="flex flex-grow flex-col content-center items-center justify-center px-6">
+      <main className="flex items-center">
+        <div className="flex flex-col content-center items-start justify-start px-6">
           {challengeReq.isLoading ? (
             <LoadingLayout />
           ) : (
