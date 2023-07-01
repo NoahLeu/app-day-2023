@@ -14,17 +14,17 @@ const formSchema = z.object({
 });
 
 type UserProps = {
-    name: string;
-    email: string;
-    location: string;
-    score: number;
+    username?: string;
+    email?: string;
+    location?: string;
+    challenge_score?: number;
 }
 
-export function ProfilePage({name, email, location, score}: UserProps) {
+export function ProfilePage({username, email, location, challenge_score}: UserProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            username: name ? name : "",
+            username: username ? username : "",
             email: email,
             location: location ? location : "",
         },
@@ -74,7 +74,7 @@ export function ProfilePage({name, email, location, score}: UserProps) {
                             </FormItem>
                         )} name={"location"} control={form.control}/>
                         <Label className="pt-10">
-                            Score: {score}
+                            Score: {challenge_score}
                         </Label>
                     </form>
                 </Form>

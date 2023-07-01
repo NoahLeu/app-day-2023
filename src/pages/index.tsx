@@ -1,10 +1,9 @@
 import Head from "next/head";
 import { api } from "@/utils/api";
-import { signIn, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { ActivityCard } from "@/components/ActivityCard";
 import { Button } from "@/components/ui/button";
 import LoadingLayout from "@/components/session/LoadingLayout";
-import { type Session } from "next-auth";
 import { useEffect, useState } from "react";
 import { type Challenge } from "@/types/challenge";
 import ChallengeRefreshButton from "@/components/ChallengeRefreshButton";
