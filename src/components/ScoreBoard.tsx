@@ -2,7 +2,6 @@ import React from "react";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -17,7 +16,7 @@ type Props = {
 
 export function ScoreBoard({ users }: Props) {
   return (
-    <Card className="m-2 h-fit">
+    <Card className="h-fit">
       <CardContent>
         <Table>
           <TableHeader>
